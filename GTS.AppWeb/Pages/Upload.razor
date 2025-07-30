@@ -4,45 +4,62 @@
 @inject NavigationManager NavigationManager
 
 @code {
-    private string? errorMessage = null;
-    private bool hasTriedLoading = false;
-    private bool isLoading = false;
+    private string? _errorMessage = null;
+    private bool _hasTriedLoading = false;
+    private bool _isLoading = false;
+    private readonly List<string> _bannedNames = ["Meta AI"];
+    private string _newBannedName = string.Empty;
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-        hasTriedLoading = true;
-        isLoading = true;
+        _hasTriedLoading = true;
+        _isLoading = true;
         try
         {
             var file = e.File;
             await using var stream = file.OpenReadStream(maxAllowedSize: 1_024_000);
             using var reader = new StreamReader(stream);
             var content = await reader.ReadToEndAsync();
-            var messageLoader = MessageLoader.FromContent(content);
+            var messageLoader = MessageLoader.FromContent(content, _bannedNames.ToArray());
             var messages = messageLoader.LoadMessages().ToArray();
             MessageService.SetMessages(messages);
-            errorMessage = null;
+            _errorMessage = null;
         }
         catch (IOException ioEx)
         {
-            errorMessage = $"File size exceeds limit: {ioEx.Message}";
+            _errorMessage = $"File size exceeds limit: {ioEx.Message}";
             MessageService.SetMessages(null);
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error loading messages: {ex.Message}";
+            _errorMessage = $"Error loading messages: {ex.Message}";
             MessageService.SetMessages(null);
         }
         finally
         {
-            isLoading = false;
+            _isLoading = false;
         }
+    }
+
+    private void AddBannedName()
+    {
+        var trimmed = _newBannedName.Trim();
+        if (!string.IsNullOrWhiteSpace(trimmed) && !_bannedNames.Contains(trimmed, StringComparer.OrdinalIgnoreCase))
+        {
+            _bannedNames.Add(trimmed);
+            _newBannedName = string.Empty;
+        }
+    }
+
+    private void RemoveBannedName(string name)
+    {
+        _bannedNames.Remove(name);
     }
 
     private void ClearMessages()
     {
         MessageService.ClearMessages();
-        hasTriedLoading = false;
+        _hasTriedLoading = false;
     }
 
 }
@@ -55,6 +72,28 @@
                     <h2 class="card-title mb-4 text-center">Upload Your Messages</h2>
                     <p class="text-muted text-center">Select a file containing your messages to get started. Supported
                         formats: .txt, .csv</p>
+                    <div class="mb-3">
+                        <label class="form-label">Banned Names</label>
+                        <div class="input-group mb-2">
+                            <input class="form-control" @bind="_newBannedName" @bind:event="oninput"
+                                   placeholder="Add a banned name..."/>
+                            <button class="btn btn-outline-secondary" type="button" @onclick="AddBannedName">Add
+                            </button>
+                        </div>
+                        <ul class="list-group">
+                            @foreach (var name in _bannedNames)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>@name</span>
+                                    <button class="btn btn-sm btn-danger" type="button"
+                                            @onclick="() => RemoveBannedName(name)"
+                                            disabled="@("Meta AI".Equals(name, StringComparison.OrdinalIgnoreCase))">
+                                        Remove
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                     <div class="mb-3 text-center">
                         <InputFile class="form-control" OnChange="OnInputFileChange"/>
                     </div>
@@ -74,14 +113,14 @@
                                 </button>
                             </div>
                         }
-                        else if (isLoading)
+                        else if (_isLoading)
                         {
                             <div class="alert alert-info text-center">
                                 <span class="spinner-border spinner-border-sm me-2"></span>Loading messages, please
                                 wait...
                             </div>
                         }
-                        else if (!hasTriedLoading)
+                        else if (!_hasTriedLoading)
                         {
                             <div class="alert alert-secondary text-center">
                                 No messages have been loaded yet. Please upload a file to begin.
@@ -91,7 +130,7 @@
                         {
                             <div class="alert alert-danger text-center">
                                 <strong>Failed to load messages.</strong><br/>
-                                <span>@(errorMessage ?? "An unknown error occurred. Please try again.")</span>
+                                <span>@(_errorMessage ?? "An unknown error occurred. Please try again.")</span>
                             </div>
                         }
                         else if (MessageService.Messages.Length == 0)

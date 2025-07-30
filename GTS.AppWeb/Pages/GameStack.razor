@@ -1,0 +1,96 @@
+@using GTS.Core
+@using Microsoft.AspNetCore.Components
+
+@if (gameOver)
+{
+    <div class="alert alert-info text-center">
+        <h4>Game Over!</h4>
+        <p>You got <strong>@score</strong> out of 10 correct.</p>
+        <button class="btn btn-primary mb-3" @onclick="Restart">Play Again</button>
+    </div>
+    <h5 class="mb-3">Your Stack:</h5>
+    @foreach (var entry in stack)
+    {
+        <MessageCard Message="@entry.Message" ShowSender="true" IsResult="true" IsCorrect="@entry.IsCorrect"
+                     WrongGuess="@entry.WrongGuess"/>
+    }
+}
+else if (currentIndex < 10)
+{
+    <div class="d-flex flex-row align-items-stretch mb-4" style="width: 100%;">
+        <div class="flex-grow-1 h-100" style="min-width: 0;">
+            <MessageCard Message="stack[currentIndex].Message" ShowSender="false"/>
+        </div>
+        <div class="ms-4 flex-shrink-0 d-flex flex-column align-items-start"
+             style="min-width: 180px; max-width: 300px; width: 100%;">
+            <div class="btn-group-vertical w-100">
+                @foreach (var sender in Senders)
+                {
+                    <button class="btn btn-outline-primary mb-2" @onclick="() => Guess(sender)"
+                            disabled="@hasGuessed">@sender</button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h6>Stack</h6>
+        @for (int i = currentIndex - 1; i >= 0; i--)
+        {
+            <MessageCard Message="@stack[i].Message" ShowSender="true" IsResult="true" IsCorrect="@stack[i].IsCorrect"
+                         WrongGuess="@stack[i].WrongGuess"/>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public Message[] Messages { get; set; } = [];
+    [Parameter] public string[]? Senders { get; set; }
+
+    private List<GameEntry> stack = new();
+    private int currentIndex = 0;
+    private int score = 0;
+    private bool hasGuessed = false;
+    private bool gameOver = false;
+
+    protected override void OnInitialized()
+    {
+        Restart();
+    }
+
+    private void Restart()
+    {
+        var rnd = new Random();
+        stack = Messages.OrderBy(_ => rnd.Next()).Take(10)
+            .Select(m => new GameEntry { Message = m }).ToList();
+        currentIndex = 0;
+        score = 0;
+        hasGuessed = false;
+        gameOver = false;
+        StateHasChanged();
+    }
+
+    private void Guess(string sender)
+    {
+        if (hasGuessed) return;
+        var entry = stack[currentIndex];
+        entry.IsCorrect = sender == entry.Message.Sender;
+        entry.WrongGuess = entry.IsCorrect ? null : sender;
+        if (entry.IsCorrect) score++;
+        hasGuessed = false;
+        currentIndex++;
+        if (currentIndex >= 10)
+        {
+            gameOver = true;
+        }
+
+        StateHasChanged();
+    }
+
+    private class GameEntry
+    {
+        public Message Message { get; set; } = null!;
+        public bool IsCorrect { get; set; }
+        public string? WrongGuess { get; set; }
+    }
+}

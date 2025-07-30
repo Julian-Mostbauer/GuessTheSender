@@ -1,6 +1,17 @@
 @page "/Game"
-<h3>Game</h3>
+@inject GTS.AppWeb.Services.MessageService MessageService
 
-@code {
-    
+<h3 class="mb-4">Guess the Sender</h3>
+
+@if (MessageService.Messages == null || MessageService.Messages.Length == 0)
+{
+    <div class="alert alert-warning">
+        <strong>No messages loaded.</strong><br/>
+        To get started, please <a href="/upload" class="alert-link">upload your message file</a>.
+    </div>
+    <p class="text-muted">Once your messages are loaded, you'll be able to play the guessing game!</p>
+}
+else
+{
+    <GameStack Messages="MessageService.Messages" Senders="MessageService.Senders"/>
 }
