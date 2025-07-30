@@ -39,31 +39,71 @@
         }
     }
 
+    private void ClearMessages()
+    {
+        MessageService.ClearMessages();
+        hasTriedLoading = false;
+    }
+
 }
 
-<h3>Upload Messages</h3>
-
-<InputFile OnChange="OnInputFileChange"/>
-<div style="border: 2px solid #ccc; padding: 10px; margin-top: 10px;">
-    @if (MessageService.Messages is { Length: > 0 })
-    {
-        <p>Currently there are @MessageService.Messages.Length Messages loaded</p>
-    }
-    else if (isLoading)
-    {
-        <p>Loading messages...</p>
-    }
-    else if (!hasTriedLoading)
-    {
-        <p>No messages loaded yet.</p>
-    }
-    else if (MessageService.Messages == null)
-    {
-        <p>Failed to load messages:</p>
-        <p>@(errorMessage ?? "No error specified")</p>
-    }
-    else if (MessageService.Messages.Length == 0)
-    {
-        <p>No messages loaded.</p>
-    }
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4 text-center">Upload Your Messages</h2>
+                    <p class="text-muted text-center">Select a file containing your messages to get started. Supported
+                        formats: .txt, .csv</p>
+                    <div class="mb-3 text-center">
+                        <InputFile class="form-control" OnChange="OnInputFileChange"/>
+                    </div>
+                    <button class="btn btn-outline-danger mb-3 w-100" @onclick="ClearMessages"
+                            disabled="@(MessageService.Messages == null)" style="display:none;">Clear All Messages
+                    </button>
+                    <div class="mt-4">
+                        @if (MessageService.Messages is { Length: > 0 })
+                        {
+                            <div class="alert alert-success d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Success!</strong> @MessageService.Messages.Length messages have been loaded.
+                                </div>
+                                <button class="btn btn-sm btn-outline-danger ms-3" @onclick="ClearMessages"
+                                        title="Clear All Messages">
+                                    <i class="bi bi-trash"></i> Clear
+                                </button>
+                            </div>
+                        }
+                        else if (isLoading)
+                        {
+                            <div class="alert alert-info text-center">
+                                <span class="spinner-border spinner-border-sm me-2"></span>Loading messages, please
+                                wait...
+                            </div>
+                        }
+                        else if (!hasTriedLoading)
+                        {
+                            <div class="alert alert-secondary text-center">
+                                No messages have been loaded yet. Please upload a file to begin.
+                            </div>
+                        }
+                        else if (MessageService.Messages == null)
+                        {
+                            <div class="alert alert-danger text-center">
+                                <strong>Failed to load messages.</strong><br/>
+                                <span>@(errorMessage ?? "An unknown error occurred. Please try again.")</span>
+                            </div>
+                        }
+                        else if (MessageService.Messages.Length == 0)
+                        {
+                            <div class="alert alert-warning text-center">
+                                The file was loaded, but no messages were found.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+

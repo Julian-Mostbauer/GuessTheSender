@@ -6,9 +6,7 @@ namespace GTS.AppWeb.Services
     {
         public Message[]? Messages { get; private set; }
 
-        public void SetMessages(Message[]? messages)
-        {
-            Messages = messages;
-        }
+        public void SetMessages(Message[]? messages) => Messages = messages;
+        public void ClearMessages() => Messages = null;
     }
 }
