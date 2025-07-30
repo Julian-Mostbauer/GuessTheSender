@@ -35,7 +35,7 @@
                 EndTime = _endTime
             };
 
-            var messageLoader = MessageLoader.FromContent(content, MessageParserProvider.Bracketed, options);
+            var messageLoader = MessageLoader.FromContent(content, options);
             var messages = messageLoader.LoadMessages().ToArray();
             MessageService.SetMessages(messages);
             _errorMessage = null;

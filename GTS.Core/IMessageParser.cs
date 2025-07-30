@@ -11,4 +11,10 @@ public static class MessageParserProvider
 {
     public static IMessageParser Dashed { get; } = new DashSeparatedMessageParser();
     public static IMessageParser Bracketed { get; } = new BracketedMessageParser();
+
+    public static IEnumerable<IMessageParser> AllParsers { get; } =
+    [
+        Dashed,
+        Bracketed
+    ];
 }

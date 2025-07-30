@@ -29,7 +29,7 @@ public class DashSeparatedMessageParser : IMessageParser
         // Parse the timestamp
         var timestampEndIndex = firstLine.IndexOf(" - ", StringComparison.Ordinal);
         if (timestampEndIndex < 0)
-            throw new FormatException("Message line does not contain expected ' - ' separator.");
+            throw new FormatException("Message line does not contain expected ' - ' separator. Line: " + firstLine);
 
         var timePart = firstLine[..timestampEndIndex];
         var time = DateTime.ParseExact(timePart, "dd.MM.yy, HH:mm", CultureInfo.InvariantCulture);
@@ -38,7 +38,7 @@ public class DashSeparatedMessageParser : IMessageParser
         var senderContent = firstLine[(timestampEndIndex + 3)..];
         var senderEnd = senderContent.IndexOf(':');
         if (senderEnd < 0)
-            throw new FormatException("Message does not contain expected ':' after sender.");
+            throw new FormatException("Message does not contain expected ':' after sender. Line: " + firstLine);
 
         var sender = senderContent[..senderEnd].Trim();
         var contentLines = new List<string>

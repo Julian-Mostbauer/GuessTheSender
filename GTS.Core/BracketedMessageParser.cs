@@ -9,17 +9,16 @@ public class BracketedMessageParser : IMessageParser
     public Message ParseMessage(string line)
     {
         var parts = line.Split([']'], 2);
-        if (parts.Length < 2) throw new FormatException("Invalid message format.");
+        if (parts.Length < 2) throw new FormatException("Invalid message format in line: " + line);
 
         var timePart = parts[0].TrimStart('[');
         var rest = parts[1].Trim();
         var senderEnd = rest.IndexOf(':');
-        if (senderEnd < 0) throw new FormatException("Missing sender separator ':'");
+        if (senderEnd < 0) throw new FormatException("Missing sender separator ':' in message: " + line);
 
         var sender = rest[..senderEnd].Trim();
-        if (string.IsNullOrWhiteSpace(sender)) throw new FormatException("Sender cannot be empty.");
+        if (string.IsNullOrWhiteSpace(sender)) throw new FormatException("Sender cannot be empty." + line);
         var content = rest[(senderEnd + 1)..].Trim();
-        if (string.IsNullOrWhiteSpace(content)) throw new FormatException("Content cannot be empty.");
 
         var time = DateTime.ParseExact(timePart, "dd.MM.yy, HH:mm:ss", null);
 

@@ -11,7 +11,7 @@ public class MessageLoaderTest
     [Fact]
     public void LoadsBracketMixedCorrectly()
     {
-        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/bracket_chat_mixed.txt", MessageParserProvider.Bracketed);
+        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/bracket_chat_mixed.txt");
         var messages = loader.LoadMessages().ToArray();
         Assert.Equal(6, messages.Length);
         Assert.Equal("ASender", messages[0].Sender);
@@ -31,7 +31,7 @@ public class MessageLoaderTest
     [Fact]
     public void LoadsBracketSingleOnlyCorrectly()
     {
-        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/bracket_chat_single_only.txt", MessageParserProvider.Bracketed);
+        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/bracket_chat_single_only.txt");
         var messages = loader.LoadMessages().ToArray();
         Assert.Equal(4, messages.Length);
         Assert.Equal("ASender", messages[0].Sender);
@@ -47,7 +47,7 @@ public class MessageLoaderTest
     [Fact]
     public void LoadsDashedMixedCorrectly()
     {
-        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/dashed_chat_mixed.txt", MessageParserProvider.Dashed);
+        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/dashed_chat_mixed.txt");
         var messages = loader.LoadMessages().ToArray();
         Assert.Equal(5, messages.Length);
         Assert.Equal("BSender Hadžić", messages[0].Sender);
@@ -65,7 +65,7 @@ public class MessageLoaderTest
     [Fact]
     public void LoadsDashedSingleOnlyCorrectly()
     {
-        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/dashed_chat_single_only.txt", MessageParserProvider.Dashed);
+        var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.Core.Tests/data/dashed_chat_single_only.txt");
         var messages = loader.LoadMessages().ToArray();
         Assert.Equal(5, messages.Length);
         Assert.Equal("ASender", messages[0].Sender);
