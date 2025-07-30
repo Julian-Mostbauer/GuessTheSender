@@ -14,22 +14,29 @@ public class MessageLoader
     private readonly string? _filePath;
     private readonly string? _content;
     private readonly MessageLoaderOptions? _options;
+    private readonly IMessageParser _parser;
 
-    private MessageLoader(string? filePath, string? content, MessageLoaderOptions? options = null)
+    private MessageLoader(string? filePath, string? content, IMessageParser parser,
+        MessageLoaderOptions? options = null)
     {
         _filePath = filePath;
         _content = content;
+        _parser = parser;
         _options = options;
     }
 
-    public static MessageLoader FromFile(string filePath, MessageLoaderOptions? options = null)
-        => new MessageLoader(filePath, null, options);
+    public static MessageLoader FromFile(string filePath, IMessageParser parser, MessageLoaderOptions? options = null)
+        => new MessageLoader(filePath, null, parser, options);
 
-    public static MessageLoader FromContent(string content, MessageLoaderOptions? options = null)
-        => new MessageLoader(null, content, options);
+    public static MessageLoader FromContent(string content, IMessageParser parser, MessageLoaderOptions? options = null)
+        => new MessageLoader(null, content, parser, options);
 
     private bool IsAllowed(Message msg)
     {
+        if (msg.Content.StartsWith('‎'))
+            return false;
+        if (msg.Content == "<Medien ausgeschlossen>")
+            return false;
         if (_options?.UnwantedSenders is { Length: > 0 } &&
             _options.UnwantedSenders.Contains(msg.Sender, StringComparer.OrdinalIgnoreCase))
             return false;
@@ -47,24 +54,21 @@ public class MessageLoader
 
     public IEnumerable<Message> LoadMessages()
     {
-        IEnumerable<string> lines;
-        if (_filePath != null)
-            lines = File.ReadLines(_filePath);
-        else if (_content != null)
-            lines = _content.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
-        else
-            throw new InvalidOperationException("No source specified for loading messages.");
+        var lines = _filePath != null
+            ? File.ReadLines(_filePath)
+            : _content?.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+              ?? throw new InvalidOperationException("No source specified for loading messages.");
 
         var buffer = new List<string>();
 
         foreach (var line in lines)
         {
-            if (line.StartsWith('‎')) continue; // Skip lines starting with a zero-width space
+            if (line.Contains('‎')) continue;
 
-            if (line.StartsWith('[') && buffer.Count > 0)
+            if (_parser.IsNewMessageStart(line) && buffer.Count > 0)
             {
-                var msg = Message.ParseSingle(string.Join('\n', buffer));
-                if (IsAllowed(msg) && !msg.Content.StartsWith('‎')) yield return msg;
+                var msg = _parser.ParseMessage(buffer);
+                if (IsAllowed(msg)) yield return msg;
                 buffer.Clear();
             }
 
@@ -73,7 +77,7 @@ public class MessageLoader
 
         if (buffer.Count > 0)
         {
-            var msg = Message.ParseSingle(string.Join('\n', buffer));
+            var msg = _parser.ParseMessage(buffer);
             if (IsAllowed(msg)) yield return msg;
         }
     }

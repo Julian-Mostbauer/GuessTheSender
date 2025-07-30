@@ -1,7 +1,7 @@
 ﻿using GTS.Core;
 
 var loader = MessageLoader.FromFile("/home/julian/Projects/GuessTheSender/GTS.AppConsole/data/chat.txt",
-    new MessageLoaderOptions { UnwantedSenders = ["Ireland Trifecta", "Meta AI"] });
+    MessageParserProvider.Bracketed, new MessageLoaderOptions { UnwantedSenders = ["Ireland Trifecta", "Meta AI"] });
 
 var messages = loader.LoadMessages().ToList();
 var random = new Random();

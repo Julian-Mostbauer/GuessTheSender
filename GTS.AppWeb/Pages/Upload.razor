@@ -35,7 +35,7 @@
                 EndTime = _endTime
             };
 
-            var messageLoader = MessageLoader.FromContent(content, options);
+            var messageLoader = MessageLoader.FromContent(content, MessageParserProvider.Bracketed, options);
             var messages = messageLoader.LoadMessages().ToArray();
             MessageService.SetMessages(messages);
             _errorMessage = null;
@@ -76,6 +76,7 @@
         MessageService.ClearMessages();
         _hasTriedLoading = false;
     }
+
 }
 
 <div class="container mt-5">
@@ -85,15 +86,19 @@
                 <div class="card-body">
                     <h2 class="card-title mb-4 text-center">Upload Your Messages</h2>
                     <p class="text-muted text-center">
-                        Upload your messages file and optionally set filters. You can exclude messages from certain senders or by length/time.
-                        <a href="https://faq.whatsapp.com/1180414079177245" target="_blank"> Message file instructions</a>.
+                        Upload your messages file and optionally set filters. You can exclude messages from certain
+                        senders or by length/time.
+                        <a href="https://faq.whatsapp.com/1180414079177245" target="_blank"> Message file
+                            instructions</a>.
                     </p>
 
                     <div class="mb-3">
                         <label class="form-label">Banned Names</label>
                         <div class="input-group mb-2">
-                            <input class="form-control" @bind="_newBannedName" @bind:event="oninput" placeholder="Add a banned name..." />
-                            <button class="btn btn-outline-secondary" type="button" @onclick="AddBannedName">Add</button>
+                            <input class="form-control" @bind="_newBannedName" @bind:event="oninput"
+                                   placeholder="Add a banned name..."/>
+                            <button class="btn btn-outline-secondary" type="button" @onclick="AddBannedName">Add
+                            </button>
                         </div>
                         <ul class="list-group">
                             @foreach (var name in _bannedNames)
@@ -112,26 +117,26 @@
 
                     <div class="mb-3">
                         <label class="form-label">Minimum Message Length</label>
-                        <input class="form-control" type="number" @bind="_minMessageLength" />
+                        <input class="form-control" type="number" @bind="_minMessageLength"/>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Maximum Message Length</label>
-                        <input class="form-control" type="number" @bind="_maxMessageLength" />
+                        <input class="form-control" type="number" @bind="_maxMessageLength"/>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Start Time (optional)</label>
-                        <input class="form-control" type="datetime-local" @bind="_startTime" />
+                        <input class="form-control" type="datetime-local" @bind="_startTime"/>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">End Time (optional)</label>
-                        <input class="form-control" type="datetime-local" @bind="_endTime" />
+                        <input class="form-control" type="datetime-local" @bind="_endTime"/>
                     </div>
 
                     <div class="mb-3 text-center">
-                        <InputFile class="form-control" OnChange="OnInputFileChange" />
+                        <InputFile class="form-control" OnChange="OnInputFileChange"/>
                     </div>
 
                     <button class="btn btn-outline-danger mb-3 w-100" @onclick="ClearMessages"
@@ -167,7 +172,7 @@
                         else if (MessageService.Messages == null)
                         {
                             <div class="alert alert-danger text-center">
-                                <strong>Failed to load messages.</strong><br />
+                                <strong>Failed to load messages.</strong><br/>
                                 <span>@(_errorMessage ?? "An unknown error occurred. Please try again.")</span>
                             </div>
                         }

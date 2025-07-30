@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTS.AppConsole", "GTS.AppCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTS.AppWeb", "GTS.AppWeb\GTS.AppWeb.csproj", "{E548E841-DA07-40F8-A3DF-86C3AB6F4AB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTS.Core.Tests", "GTS.Core.Tests\GTS.Core.Tests.csproj", "{0C5E5423-2BF2-4E24-B545-D070A5DEC7EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{E548E841-DA07-40F8-A3DF-86C3AB6F4AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E548E841-DA07-40F8-A3DF-86C3AB6F4AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E548E841-DA07-40F8-A3DF-86C3AB6F4AB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C5E5423-2BF2-4E24-B545-D070A5DEC7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C5E5423-2BF2-4E24-B545-D070A5DEC7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C5E5423-2BF2-4E24-B545-D070A5DEC7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C5E5423-2BF2-4E24-B545-D070A5DEC7EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
