@@ -1,30 +1,48 @@
 namespace GTS.Core;
 
+public class MessageLoaderOptions
+{
+    public string[]? UnwantedSenders { get; set; }
+    public int? MinMessageLength { get; set; }
+    public int? MaxMessageLength { get; set; }
+    public DateTime? StartTime { get; set; }
+    public DateTime? EndTime { get; set; }
+}
+
 public class MessageLoader
 {
     private readonly string? _filePath;
     private readonly string? _content;
-    private readonly string[]? _unwantedSenders;
+    private readonly MessageLoaderOptions? _options;
 
-    private MessageLoader(string? filePath, string? content, string[]? unwantedSenders)
+    private MessageLoader(string? filePath, string? content, MessageLoaderOptions? options = null)
     {
         _filePath = filePath;
         _content = content;
-        _unwantedSenders = unwantedSenders;
+        _options = options;
     }
 
-    public static MessageLoader FromFile(string filePath, params string[]? unwantedSenders)
-        => new MessageLoader(filePath, null, unwantedSenders);
+    public static MessageLoader FromFile(string filePath, MessageLoaderOptions? options = null)
+        => new MessageLoader(filePath, null, options);
 
-    public static MessageLoader FromContent(string content, params string[]? unwantedSenders)
-        => new MessageLoader(null, content, unwantedSenders);
+    public static MessageLoader FromContent(string content, MessageLoaderOptions? options = null)
+        => new MessageLoader(null, content, options);
 
-    private bool IsAllowed(string sender)
+    private bool IsAllowed(Message msg)
     {
-        if (_unwantedSenders == null || _unwantedSenders.Length == 0)
-            return true;
+        if (_options?.UnwantedSenders is { Length: > 0 } &&
+            _options.UnwantedSenders.Contains(msg.Sender, StringComparer.OrdinalIgnoreCase))
+            return false;
+        if (_options?.MinMessageLength.HasValue == true && (msg.Content?.Length ?? 0) < _options.MinMessageLength.Value)
+            return false;
+        if (_options?.MaxMessageLength.HasValue == true && (msg.Content?.Length ?? 0) > _options.MaxMessageLength.Value)
+            return false;
+        if (_options?.StartTime.HasValue == true && msg.Time < _options.StartTime.Value)
+            return false;
+        if (_options?.EndTime.HasValue == true && msg.Time > _options.EndTime.Value)
+            return false;
 
-        return !_unwantedSenders.Contains(sender, StringComparer.OrdinalIgnoreCase);
+        return true;
     }
 
     public IEnumerable<Message> LoadMessages()
@@ -46,7 +64,7 @@ public class MessageLoader
             if (line.StartsWith('[') && buffer.Count > 0)
             {
                 var msg = Message.ParseSingle(string.Join('\n', buffer));
-                if (IsAllowed(msg.Sender) && !msg.Content.StartsWith('‎')) yield return msg;
+                if (IsAllowed(msg) && !msg.Content.StartsWith('‎')) yield return msg;
                 buffer.Clear();
             }
 
@@ -56,7 +74,7 @@ public class MessageLoader
         if (buffer.Count > 0)
         {
             var msg = Message.ParseSingle(string.Join('\n', buffer));
-            if (IsAllowed(msg.Sender)) yield return msg;
+            if (IsAllowed(msg)) yield return msg;
         }
     }
 }

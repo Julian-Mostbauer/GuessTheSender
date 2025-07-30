@@ -10,6 +10,11 @@
     private readonly List<string> _bannedNames = ["Meta AI"];
     private string _newBannedName = string.Empty;
 
+    private int? _minMessageLength = null;
+    private int? _maxMessageLength = null;
+    private DateTime? _startTime = null;
+    private DateTime? _endTime = null;
+
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         _hasTriedLoading = true;
@@ -20,7 +25,17 @@
             await using var stream = file.OpenReadStream(maxAllowedSize: 1_024_000);
             using var reader = new StreamReader(stream);
             var content = await reader.ReadToEndAsync();
-            var messageLoader = MessageLoader.FromContent(content, _bannedNames.ToArray());
+
+            var options = new MessageLoaderOptions
+            {
+                UnwantedSenders = _bannedNames.ToArray(),
+                MinMessageLength = _minMessageLength,
+                MaxMessageLength = _maxMessageLength,
+                StartTime = _startTime,
+                EndTime = _endTime
+            };
+
+            var messageLoader = MessageLoader.FromContent(content, options);
             var messages = messageLoader.LoadMessages().ToArray();
             MessageService.SetMessages(messages);
             _errorMessage = null;
@@ -61,7 +76,6 @@
         MessageService.ClearMessages();
         _hasTriedLoading = false;
     }
-
 }
 
 <div class="container mt-5">
@@ -70,18 +84,16 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h2 class="card-title mb-4 text-center">Upload Your Messages</h2>
-                    <p class="text-muted text-center">Select the text file containing your messages to get started. You
-                        can find the official guide to generate the messages text file <a
-                            href="https://faq.whatsapp.com/1180414079177245/?cms_platform=android&cms_id=1180414079177245&draft=false">here</a>.
-                        You can also set banned names, to ignore messages from certain
-                        users.</p>
+                    <p class="text-muted text-center">
+                        Upload your messages file and optionally set filters. You can exclude messages from certain senders or by length/time.
+                        <a href="https://faq.whatsapp.com/1180414079177245" target="_blank"> Message file instructions</a>.
+                    </p>
+
                     <div class="mb-3">
                         <label class="form-label">Banned Names</label>
                         <div class="input-group mb-2">
-                            <input class="form-control" @bind="_newBannedName" @bind:event="oninput"
-                                   placeholder="Add a banned name..."/>
-                            <button class="btn btn-outline-secondary" type="button" @onclick="AddBannedName">Add
-                            </button>
+                            <input class="form-control" @bind="_newBannedName" @bind:event="oninput" placeholder="Add a banned name..." />
+                            <button class="btn btn-outline-secondary" type="button" @onclick="AddBannedName">Add</button>
                         </div>
                         <ul class="list-group">
                             @foreach (var name in _bannedNames)
@@ -97,12 +109,35 @@
                             }
                         </ul>
                     </div>
-                    <div class="mb-3 text-center">
-                        <InputFile class="form-control" OnChange="OnInputFileChange"/>
+
+                    <div class="mb-3">
+                        <label class="form-label">Minimum Message Length</label>
+                        <input class="form-control" type="number" @bind="_minMessageLength" />
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Maximum Message Length</label>
+                        <input class="form-control" type="number" @bind="_maxMessageLength" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Start Time (optional)</label>
+                        <input class="form-control" type="datetime-local" @bind="_startTime" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">End Time (optional)</label>
+                        <input class="form-control" type="datetime-local" @bind="_endTime" />
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <InputFile class="form-control" OnChange="OnInputFileChange" />
+                    </div>
+
                     <button class="btn btn-outline-danger mb-3 w-100" @onclick="ClearMessages"
                             disabled="@(MessageService.Messages == null)" style="display:none;">Clear All Messages
                     </button>
+
                     <div class="mt-4">
                         @if (MessageService.Messages is { Length: > 0 })
                         {
@@ -132,7 +167,7 @@
                         else if (MessageService.Messages == null)
                         {
                             <div class="alert alert-danger text-center">
-                                <strong>Failed to load messages.</strong><br/>
+                                <strong>Failed to load messages.</strong><br />
                                 <span>@(_errorMessage ?? "An unknown error occurred. Please try again.")</span>
                             </div>
                         }
@@ -148,4 +183,3 @@
         </div>
     </div>
 </div>
-
