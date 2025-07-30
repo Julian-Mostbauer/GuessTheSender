@@ -1,7 +1,16 @@
 ﻿@page "/"
+@inject GTS.AppWeb.Services.MessageService MessageService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Guess the sender!</h1>
 
-Welcome to your new app.
+@if (MessageService.Messages == null)
+{
+    <p>You currently have no messages loaded!</p>
+    <p>Please check out the <a href="/upload">Upload page</a></p>
+}
+else
+{
+    <p>@MessageService.Messages.Length Messages are loaded</p>
+}

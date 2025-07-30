@@ -6,13 +6,15 @@
 @code {
     private string? errorMessage = null;
     private bool hasTriedLoading = false;
+    private bool isLoading = false;
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
         hasTriedLoading = true;
-        var file = e.File;
+        isLoading = true;
         try
         {
+            var file = e.File;
             await using var stream = file.OpenReadStream(maxAllowedSize: 1_024_000);
             using var reader = new StreamReader(stream);
             var content = await reader.ReadToEndAsync();
@@ -31,15 +33,27 @@
             errorMessage = $"Error loading messages: {ex.Message}";
             MessageService.SetMessages(null);
         }
+        finally
+        {
+            isLoading = false;
+        }
     }
+
 }
 
 <h3>Upload Messages</h3>
 
 <InputFile OnChange="OnInputFileChange"/>
 <div style="border: 2px solid #ccc; padding: 10px; margin-top: 10px;">
-
-    @if (!hasTriedLoading)
+    @if (MessageService.Messages is { Length: > 0 })
+    {
+        <p>Currently there are @MessageService.Messages.Length Messages loaded</p>
+    }
+    else if (isLoading)
+    {
+        <p>Loading messages...</p>
+    }
+    else if (!hasTriedLoading)
     {
         <p>No messages loaded yet.</p>
     }
@@ -51,15 +65,5 @@
     else if (MessageService.Messages.Length == 0)
     {
         <p>No messages loaded.</p>
-    }
-    else
-    {
-        <h4>Loaded @MessageService.Messages.Length Messages</h4>
-        <ul>
-            @foreach (var message in MessageService.Messages.Take(10))
-            {
-                <li>@message</li>
-            }
-        </ul>
     }
 </div>
