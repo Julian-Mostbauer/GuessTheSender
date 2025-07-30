@@ -1,0 +1,59 @@
+@page "/upload"
+@using GTS.Core
+@inject GTS.AppWeb.Services.MessageService MessageService
+@inject NavigationManager NavigationManager
+
+@code {
+    private string? errorMessage = null;
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        try
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 512000);
+            using var reader = new StreamReader(stream);
+            var content = await reader.ReadToEndAsync();
+            var messageLoader = MessageLoader.FromContent(content);
+            var messages = messageLoader.LoadMessages().ToArray();
+            MessageService.SetMessages(messages);
+        }
+        catch (IOException ioEx)
+        {
+            errorMessage = $"File size exceeds limit: {ioEx.Message}";
+            MessageService.SetMessages(null);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading messages: {ex.Message}";
+            MessageService.SetMessages(null);
+        }
+    }
+
+}
+
+<h3>Upload Messages</h3>
+
+<InputFile OnChange="OnInputFileChange"/>
+<div style="border: 2px solid #ccc; padding: 10px; margin-top: 10px;">
+    
+    @if (MessageService.Messages == null)
+    {
+        <p>Failed to load messages:</p>
+        <p>@(errorMessage ?? "No error specified")</p>
+    }
+    else if (MessageService.Messages.Length == 0)
+    {
+        <p>No messages loaded.</p>
+    }
+    else
+    {
+        <h4>Loaded @MessageService.Messages.Length Messages</h4>
+        <ul>
+            @foreach (var message in MessageService.Messages.Take(10))
+            {
+                <li>@message</li>
+            }
+        </ul>
+    }
+</div>
