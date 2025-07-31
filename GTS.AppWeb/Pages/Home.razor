@@ -8,25 +8,31 @@
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <h1 class="display-5 mb-4 text-wrap" style="white-space: normal;">Welcome to <span class="text-primary text-nowrap">Guess the Sender!</span></h1>
-                    <button class="btn btn-outline-danger mb-3" @onclick="ClearMessages" disabled="@(MessageService.Messages == null)" style="display:none;">Clear All Messages</button>
+                    <h1 class="display-5 mb-4 text-wrap" style="white-space: normal;">Welcome to <span
+                            class="text-primary text-nowrap">Guess the Sender!</span></h1>
+                    <button class="btn btn-outline-danger mb-3" @onclick="ClearMessages"
+                            disabled="@(MessageService.Messages == null)" style="display:none;">Clear All Messages
+                    </button>
                     @if (MessageService.Messages == null)
                     {
                         <div class="alert alert-warning">
-                            <strong>No messages loaded.</strong><br />
-                            To get started, please <a href="/upload" class="alert-link">upload your message file</a>.
+                            <strong>No messages loaded.</strong><br/>
+                            To get started, please <a href="/GuessTheSender/upload" class="alert-link">upload your
+                                message file</a>.
                         </div>
-                        <p class="text-muted">Once your messages are loaded, you'll be able to play the guessing game!</p>
-                        <p class="text-muted">See <a href="/about">about</a> for more info!</p>
+                        <p class="text-muted">Once your messages are loaded, you'll be able to play the guessing
+                            game!</p>
+                        <p class="text-muted">See <a href="/GuessTheSender/about">about</a> for more info!</p>
                     }
                     else
                     {
                         <div class="alert alert-success d-flex justify-content-between align-items-center">
                             <div>
-                                <strong>@MessageService.Messages.Length messages are ready!</strong><br />
+                                <strong>@MessageService.Messages.Length messages are ready!</strong><br/>
                                 Head over to the game and start guessing who sent each message.
                             </div>
-                            <button class="btn btn-sm btn-outline-danger ms-3" @onclick="ClearMessages" title="Clear All Messages">
+                            <button class="btn btn-sm btn-outline-danger ms-3" @onclick="ClearMessages"
+                                    title="Clear All Messages">
                                 <i class="bi bi-trash"></i> Clear
                             </button>
                         </div>
@@ -38,9 +44,11 @@
 </div>
 
 @code {
+
     private void ClearMessages()
     {
         MessageService.ClearMessages();
     }
+
 }
 
