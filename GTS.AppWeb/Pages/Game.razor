@@ -1,6 +1,8 @@
 @page "/game"
 @inject GTS.AppWeb.Services.MessageService MessageService
 
+<PageTitle>Game</PageTitle>
+
 <h3 class="mb-4">Guess the Sender</h3>
 
 @if (MessageService.Messages == null || MessageService.Messages.Length == 0)

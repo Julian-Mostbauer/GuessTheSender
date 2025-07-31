@@ -21,17 +21,20 @@ else if (currentIndex < 10)
         <div class="flex-grow-1 h-100" style="min-width: 0;">
             <MessageCard Message="stack[currentIndex].Message" ShowSender="false"/>
         </div>
-        <div class="ms-4 flex-shrink-0 d-flex flex-column align-items-start"
+        <div class="ms-4 flex-shrink-0 d-flex flex-column align-items-stretch h-100"
              style="min-width: 180px; max-width: 300px; width: 100%;">
-            <div class="btn-group-vertical w-100">
-                @foreach (var sender in Senders)
+            <div class="d-flex flex-wrap h-100 gap-2">
+                @foreach (var sender in Senders!)
                 {
-                    <button class="btn btn-outline-primary mb-2" @onclick="() => Guess(sender)"
+                    <button class="btn btn-outline-primary flex-fill"
+                            style="flex: 1 1 45%; min-width: fit-content;"
+                            @onclick="() => Guess(sender)"
                             disabled="@hasGuessed">@sender</button>
                 }
             </div>
         </div>
     </div>
+
 
     <div class="mt-4">
         <h6>Stack</h6>
@@ -93,4 +96,5 @@ else if (currentIndex < 10)
         public bool IsCorrect { get; set; }
         public string? WrongGuess { get; set; }
     }
+
 }
