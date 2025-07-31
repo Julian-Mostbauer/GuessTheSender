@@ -88,7 +88,8 @@
                 <div class="card-body">
                     <h2 class="card-title mb-4 text-center">Upload Your Messages</h2>
                     <p class="text-muted text-center">
-                        Upload your messages file and optionally set filters. You can exclude messages from certain
+                        Upload your messages <b>text file</b> and optionally set filters. You can exclude messages from
+                        certain
                         senders or by length/time.
                         <a href="https://faq.whatsapp.com/1180414079177245" target="_blank"> Message file
                             instructions</a>.
@@ -137,8 +138,10 @@
                         <input class="form-control" type="datetime-local" @bind="_endTime"/>
                     </div>
 
-                    <div class="mb-3 text-center">
-                        <InputFile class="form-control" OnChange="OnInputFileChange"/>
+                    <div class="mb-3">
+                        <label class="form-label">Upload the <b>text file</b>, not the zip, containing your messages
+                        </label>
+                        <InputFile class="form-control" OnChange="OnInputFileChange" accept=".txt"/>
                     </div>
 
                     <button class="btn btn-outline-danger mb-3 w-100" @onclick="ClearMessages"
@@ -176,6 +179,10 @@
                             <div class="alert alert-danger text-center">
                                 <strong>Failed to load messages.</strong><br/>
                                 <span>@(_errorMessage ?? "An unknown error occurred. Please try again.")</span>
+                                <br/>
+                                <span>You can report any issue you are facing <a
+                                        target="_blank"
+                                        href="https://github.com/Julian-Mostbauer/GuessTheSender/issues/new">here on github</a>.</span>
                             </div>
                         }
                         else if (MessageService.Messages.Length == 0)
