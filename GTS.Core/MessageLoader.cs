@@ -32,7 +32,7 @@ public class MessageLoader
     {
         if (msg.Content.StartsWith('‎'))
             return false;
-        if (msg.Content == "<Medien ausgeschlossen>")
+        if (msg.Content is "<Medien ausgeschlossen>" or "Diese Nachricht wurde gelöscht.")
             return false;
         if (_options?.UnwantedSenders is { Length: > 0 } &&
             _options.UnwantedSenders.Contains(msg.Sender, StringComparer.OrdinalIgnoreCase))
