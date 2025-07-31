@@ -1,5 +1,6 @@
 using System;
 using GTS.Core;
+using GTS.Core.MessageParserImplementations;
 using JetBrains.Annotations;
 using Xunit;
 

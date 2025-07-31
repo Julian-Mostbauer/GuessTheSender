@@ -1,4 +1,4 @@
-namespace GTS.Core;
+namespace GTS.Core.MessageParserImplementations;
 
 public class BracketedMessageParser : IMessageParser
 {

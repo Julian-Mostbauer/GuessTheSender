@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace GTS.Core;
+namespace GTS.Core.MessageParserImplementations;
 
 public class DashSeparatedMessageParser : IMessageParser
 {
