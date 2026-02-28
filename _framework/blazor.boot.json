@@ -1,10 +1,10 @@
 {
   "mainAssemblyName": "GTS.AppWeb",
   "resources": {
-    "hash": "sha256-y3Ggt5Sv0lQKDVgzoPGur003/TVMVfzH412lo9VCpCc=",
+    "hash": "sha256-gZJaIL2slHJ+RTO6bWsvkgPNgHuXhLl6LzxQ5P+Vxyg=",
     "fingerprinting": {
-      "GTS.AppWeb.ef9artwx9c.wasm": "GTS.AppWeb.wasm",
-      "GTS.Core.pfn6gzq3jc.wasm": "GTS.Core.wasm",
+      "GTS.AppWeb.rzdj5fvszg.wasm": "GTS.AppWeb.wasm",
+      "GTS.Core.ncsn9ymx1s.wasm": "GTS.Core.wasm",
       "Microsoft.AspNetCore.Components.Web.lriipf09bo.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
       "Microsoft.AspNetCore.Components.WebAssembly.jgrtnnjib3.wasm": "Microsoft.AspNetCore.Components.WebAssembly.wasm",
       "Microsoft.AspNetCore.Components.te1d7bvilk.wasm": "Microsoft.AspNetCore.Components.wasm",
@@ -64,8 +64,8 @@
       "System.Runtime.InteropServices.JavaScript.h48ngg49jo.wasm": "sha256-4ViELjYjmHFXeufjSKi9w6LE2MIOfmii3tm+YdyLbvc="
     },
     "assembly": {
-      "GTS.AppWeb.ef9artwx9c.wasm": "sha256-xuJe8PfkVViWp9h6PLY2/L8KYtTfeU41E9w0/2/Ddj0=",
-      "GTS.Core.pfn6gzq3jc.wasm": "sha256-JZgY0q1zViI6/F6SKaUBopOJCFAXcNjkYt07O8r6sBo=",
+      "GTS.AppWeb.rzdj5fvszg.wasm": "sha256-l34yZ00IQHxZajlmc0oCcSCPHcFFCNi52MEhBlKyixQ=",
+      "GTS.Core.ncsn9ymx1s.wasm": "sha256-uf/rx5sAHeqN7qkEaoO2YSoOCX184c8/9sdMhXRYdHs=",
       "Microsoft.AspNetCore.Components.Web.lriipf09bo.wasm": "sha256-gcTYB46D9egBCPqM5G0K2vg8tLc7xOa6NE61uWKvLQo=",
       "Microsoft.AspNetCore.Components.WebAssembly.jgrtnnjib3.wasm": "sha256-vewya/fvMW39xEKpb7rfS3+UPaMRwgTrXCWyvuFK8LU=",
       "Microsoft.AspNetCore.Components.te1d7bvilk.wasm": "sha256-ZSv6CTpJGrhQEIrsHvJTtCDRksR3b+98weccnLudRS0=",
