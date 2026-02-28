@@ -1,6 +1,5 @@
 ﻿@page "/"
 @inject GTS.AppWeb.Services.MessageService MessageService
-
 <PageTitle>Home</PageTitle>
 
 <div class="container mt-5">
@@ -17,12 +16,12 @@
                     {
                         <div class="alert alert-warning">
                             <strong>No messages loaded.</strong><br/>
-                            To get started, please <a href="/GuessTheSender/upload" class="alert-link">upload your
+                            To get started, please <a href="upload" class="alert-link">upload your
                                 message file</a>.
                         </div>
                         <p class="text-muted">Once your messages are loaded, you'll be able to play the guessing
                             game!</p>
-                        <p class="text-muted">See <a href="/GuessTheSender/about">about</a> for more info!</p>
+                        <p class="text-muted">See <a href="about">about</a> for more info!</p>
                     }
                     else
                     {
@@ -49,6 +48,5 @@
     {
         MessageService.ClearMessages();
     }
-
 }
 
