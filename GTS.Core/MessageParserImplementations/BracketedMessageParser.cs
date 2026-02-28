@@ -1,8 +1,23 @@
 namespace GTS.Core.MessageParserImplementations;
 
+using System.Globalization;
+
 public class BracketedMessageParser : IMessageParser
 {
-    public bool IsNewMessageStart(string line) => line.StartsWith('[');
+    public bool IsNewMessageStart(string line)
+    {
+        if (!line.StartsWith('[')) return false;
+
+        var endIdx = line.IndexOf(']');
+        if (endIdx <= 1) return false; // empty or malformed
+
+        var inside = line.Substring(1, endIdx - 1);
+
+        // Only consider it a message start if the bracketed token parses as a timestamp
+        // in the expected WhatsApp export format: "dd.MM.yy, HH:mm:ss".
+        return DateTime.TryParseExact(inside, "dd.MM.yy, HH:mm:ss", CultureInfo.InvariantCulture,
+            DateTimeStyles.None, out _);
+    }
 
     public Message ParseMessage(IEnumerable<string> lines) => ParseMessage(string.Join('\n', lines));
 
